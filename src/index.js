@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const express = require('express');
 
 const { authenticate } = require('./authentication');
+const buildDataloaders = require('./dataloaders');
 const connectMongo = require('./mongo-connector');
 const schema = require('./schema');
 
@@ -12,7 +13,11 @@ const start = async () => {
   const buildOptions = async (req, res) => {
     const user = await authenticate(req, mongo.Users);
     return {
-      context: { mongo, user },
+      context: {
+        dataloaders: buildDataloaders(mongo),
+        mongo,
+        user
+      },
       schema
     };
   }
