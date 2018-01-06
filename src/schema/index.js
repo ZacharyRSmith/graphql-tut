@@ -18,6 +18,12 @@ const typeDefs = `
     email: AUTH_PROVIDER_EMAIL
   }
 
+  input LinkFilter {
+    OR: [LinkFilter!]
+    description_contains: String
+    url_contains: String
+  }
+
   type Link {
     id: ID!
     url: String!
@@ -68,7 +74,7 @@ const typeDefs = `
   }
 
   type Query {
-    allLinks: [Link!]!
+    allLinks(filter: LinkFilter): [Link!]!
   }
 `;
 

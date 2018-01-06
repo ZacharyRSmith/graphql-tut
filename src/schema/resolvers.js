@@ -18,6 +18,25 @@ function assertValidLink({ url }) {
   }
 }
 
+function buildFilters({ OR = [], description_contains, url_contains }) {
+  const filter = (description_contains || url_contains) ? {} : null;
+  if (description_contains) {
+    filter.description = { $regex: `.*${description_contains}.*` };
+  }
+  if (url_contains) {
+    filter.url = { $regex: `.*${url_contains}.*` };
+  }
+
+  let filters = filter ? [filter] : [];
+  console.log('filters', filters);
+  for (let i = 0; i < OR.length; i++) {
+    console.log('buildFilters(OR[i])', buildFilters(OR[i]));
+    filters = filters.concat(buildFilters(OR[i]));
+  }
+  console.log('filters', filters);
+  return filters;
+}
+
 module.exports = {
   Link: {
     id: root => root._id || root.id,
@@ -97,8 +116,10 @@ module.exports = {
   },
 
   Query: {
-    allLinks: async (root, data, { mongo: { Links }}) => {
-      return await Links.find({}).toArray();
+    allLinks: async (root, { filter }, { mongo: { Links }}) => {
+      console.log('filter', filter);
+      const query = filter ? { $or: buildFilters(filter) } : {};
+      return await Links.find(query).toArray();
     }
   }
 };
