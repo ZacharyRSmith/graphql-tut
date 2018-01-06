@@ -3,6 +3,12 @@ const { makeExecutableSchema } = require('graphql-tools');
 const resolvers = require('./resolvers');
 
 const typeDefs = `
+  enum _ModelMutationType {
+    CREATED
+    UPDATED
+    DELETED
+  }
+
   input AUTH_PROVIDER_EMAIL {
     email: String!
     password: String!
@@ -20,6 +26,15 @@ const typeDefs = `
     votes: [Vote!]!
   }
 
+  input LinkSubscriptionFilter {
+    mutation_in: [_ModelMutationType!]
+  }
+
+  type LinkSubscriptionPayload {
+    mutation: _ModelMutationType!
+    node: Link
+  }
+
   type Mutation {
     createLink(url: String!, description: String!): Link
 
@@ -33,6 +48,10 @@ const typeDefs = `
   type SigninPayload {
     token: String
     user: User
+  }
+
+  type Subscription {
+    Link(filter: LinkSubscriptionFilter): LinkSubscriptionPayload
   }
 
   type User {
