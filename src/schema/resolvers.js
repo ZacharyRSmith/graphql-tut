@@ -9,9 +9,9 @@ module.exports = {
 
   Mutation: {
     createLink: async (root, data, { mongo: { Links }, user }) => {
-      const newLink = Object.assign({ postedById: user && user.id }, data);
+      const newLink = Object.assign({ postedById: user && user._id }, data);
       const response = await Links.insert(newLink);
-      return Object.assign({ id: response.insertedIds[0] }, data);
+      return Object.assign({ id: response.insertedIds[0] }, newLink);
     },
 
     createUser: async (root, data, { mongo: { Users }}) => {

@@ -18,7 +18,8 @@ const start = async () => {
   }
   app.use('/graphql', bodyParser.json(), graphqlExpress(buildOptions));
   app.use('/graphiql', graphiqlExpress({
-    endpointURL: '/graphql'
+    endpointURL: '/graphql',
+    passHeader: `'Authorization': 'bearer token-zacharysmith4989@gmail.com'`
   }));
   const PORT = 3000;
   app.listen(PORT, (listenErr) => {
